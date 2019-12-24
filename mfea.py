@@ -2,11 +2,14 @@ from mtsoo import *
 
 config = load_config()
 
-def mfea(functions, config, callback=None):
+def mfea(functions, config, callback=None, pop_size=None):
   # unpacking hyper-parameters
   K = len(functions)
   N = config['pop_size'] * K
-  D = config['dimension']
+  if(pop_size == None):
+    D = config['dimension']
+  else:
+    D = pop_size
   T = config['num_iter']
   sbxdi = config['sbxdi']
   pmdi  = config['pmdi']
@@ -22,7 +25,8 @@ def mfea(functions, config, callback=None):
   # evaluate
   for i in range(2 * N):
     sf = skill_factor[i]
-    factorial_cost[i, sf] = functions[sf](population[i])
+    factorial_cost[i, sf] = functions[sf](population[i], skill_factor=sf)
+    # factorial_cost[i, sf] = functions[sf](population[i])
   scalar_fitness = calculate_scalar_fitness(factorial_cost)
 
   # sort 
@@ -77,7 +81,8 @@ def mfea(functions, config, callback=None):
     # evaluate
     for i in range(N, 2 * N):
       sf = skill_factor[i]
-      factorial_cost[i, sf] = functions[sf](population[i])
+      factorial_cost[i, sf] = functions[sf](population[i], skill_factor=sf)
+      # factorial_cost[i, sf] = functions[sf](population[i])
     scalar_fitness = calculate_scalar_fitness(factorial_cost)
 
     # sort
